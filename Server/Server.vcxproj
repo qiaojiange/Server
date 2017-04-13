@@ -94,11 +94,18 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="HPSocket_UD.dll" />
     <None Include="ReadMe.txt" />
     <None Include="res\Server.ico" />
     <None Include="res\Server.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="http\bufferptr.h" />
+    <ClInclude Include="http\Help.h" />
+    <ClInclude Include="http\HPSocket.h" />
+    <ClInclude Include="http\HPTypeDef.h" />
+    <ClInclude Include="http\HttpServerListenerImpl.h" />
+    <ClInclude Include="http\SocketInterface.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="ServerDlg.h" />
@@ -106,6 +113,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="http\bufferptr.cpp" />
+    <ClCompile Include="http\Help.cpp" />
+    <ClCompile Include="http\HttpServerListenerImpl.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -116,7 +126,15 @@
   <ItemGroup>
     <ResourceCompile Include="Server.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="HPSocket_UD.lib" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Server.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -22,6 +22,7 @@
     <None Include="res\Server.ico">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="HPSocket_UD.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -39,6 +40,24 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="http\bufferptr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http\Help.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http\HPSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http\HPTypeDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http\HttpServerListenerImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http\SocketInterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -50,10 +69,22 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="http\bufferptr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="http\Help.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="http\HttpServerListenerImpl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Server.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="HPSocket_UD.lib" />
   </ItemGroup>
 </Project>

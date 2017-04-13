@@ -1,5 +1,5 @@
-
-// ServerDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿
+// ServerDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -11,21 +11,24 @@
 #define new DEBUG_NEW
 #endif
 
+#define SHOW_TRACE 1
 
-// ÓÃÓÚÓ¦ÓÃ³ÌĞò¡°¹ØÓÚ¡±²Ëµ¥ÏîµÄ CAboutDlg ¶Ô»°¿ò
+
+
+// ç”¨äºåº”ç”¨ç¨‹åºâ€œå…³äºâ€èœå•é¡¹çš„ CAboutDlg å¯¹è¯æ¡†
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 	enum { IDD = IDD_ABOUTBOX };
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
-// ÊµÏÖ
+// å®ç°
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -43,10 +46,10 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CServerDlg ¶Ô»°¿ò
+// CServerDlg å¯¹è¯æ¡†
 
-
-
+ const LPCTSTR CServerDlg::ADDRESS = _T("127.0.0.1");
+ const USHORT CServerDlg::HTTP_PORT = 8888;
 
 CServerDlg::CServerDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CServerDlg::IDD, pParent)
@@ -57,6 +60,7 @@ CServerDlg::CServerDlg(CWnd* pParent /*=NULL*/)
 void CServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST_Server_Info, m_ServerInfo);
 }
 
 BEGIN_MESSAGE_MAP(CServerDlg, CDialogEx)
@@ -64,18 +68,21 @@ BEGIN_MESSAGE_MAP(CServerDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_Server_Start, &CServerDlg::OnBnClickedButtonServerStart)
+	ON_WM_DESTROY()
+	
+	ON_BN_CLICKED(IDC_BUTTON_Sever_Stop, &CServerDlg::OnClickedButtonSeverStop)
 END_MESSAGE_MAP()
 
 
-// CServerDlg ÏûÏ¢´¦Àí³ÌĞò
+// CServerDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 BOOL CServerDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ½«¡°¹ØÓÚ...¡±²Ëµ¥ÏîÌí¼Óµ½ÏµÍ³²Ëµ¥ÖĞ¡£
+	// å°†â€œå…³äº...â€èœå•é¡¹æ·»åŠ åˆ°ç³»ç»Ÿèœå•ä¸­ã€‚
 
-	// IDM_ABOUTBOX ±ØĞëÔÚÏµÍ³ÃüÁî·¶Î§ÄÚ¡£
+	// IDM_ABOUTBOX å¿…é¡»åœ¨ç³»ç»Ÿå‘½ä»¤èŒƒå›´å†…ã€‚
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -93,16 +100,29 @@ BOOL CServerDlg::OnInitDialog()
 		}
 	}
 
-	// ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£µ±Ó¦ÓÃ³ÌĞòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-	//  Ö´ĞĞ´Ë²Ù×÷
-	SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-	SetIcon(m_hIcon, FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	// è®¾ç½®æ­¤å¯¹è¯æ¡†çš„å›¾æ ‡ã€‚å½“åº”ç”¨ç¨‹åºä¸»çª—å£ä¸æ˜¯å¯¹è¯æ¡†æ—¶ï¼Œæ¡†æ¶å°†è‡ªåŠ¨
+	//  æ‰§è¡Œæ­¤æ“ä½œ
+	SetIcon(m_hIcon, TRUE);			// è®¾ç½®å¤§å›¾æ ‡
+	SetIcon(m_hIcon, FALSE);		// è®¾ç½®å°å›¾æ ‡
 
 	ShowWindow(SW_MAXIMIZE);
 
-	// TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–ä»£ç 
 
-	return TRUE;  // ³ı·Ç½«½¹µãÉèÖÃµ½¿Ø¼ş£¬·ñÔò·µ»Ø TRUE
+
+	m_pHelp = CHelp::newInstance();
+
+	//åˆå§‹åŒ–æ¥å£
+	m_pServerListener = new CHttpServerListenerImpl(HTTP_NAME);
+
+	m_pServerPtr = new CHttpServerPtr(m_pServerListener);
+	m_pServer = *m_pServerPtr;
+
+
+	m_pHelp->setMainWnd(this);
+	m_pHelp->setInfoList(&m_ServerInfo);
+
+	return TRUE;  // é™¤éå°†ç„¦ç‚¹è®¾ç½®åˆ°æ§ä»¶ï¼Œå¦åˆ™è¿”å› TRUE
 }
 
 void CServerDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -118,19 +138,19 @@ void CServerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// Èç¹ûÏò¶Ô»°¿òÌí¼Ó×îĞ¡»¯°´Å¥£¬ÔòĞèÒªÏÂÃæµÄ´úÂë
-//  À´»æÖÆ¸ÃÍ¼±ê¡£¶ÔÓÚÊ¹ÓÃÎÄµµ/ÊÓÍ¼Ä£ĞÍµÄ MFC Ó¦ÓÃ³ÌĞò£¬
-//  Õâ½«ÓÉ¿ò¼Ü×Ô¶¯Íê³É¡£
+// å¦‚æœå‘å¯¹è¯æ¡†æ·»åŠ æœ€å°åŒ–æŒ‰é’®ï¼Œåˆ™éœ€è¦ä¸‹é¢çš„ä»£ç 
+//  æ¥ç»˜åˆ¶è¯¥å›¾æ ‡ã€‚å¯¹äºä½¿ç”¨æ–‡æ¡£/è§†å›¾æ¨¡å‹çš„ MFC åº”ç”¨ç¨‹åºï¼Œ
+//  è¿™å°†ç”±æ¡†æ¶è‡ªåŠ¨å®Œæˆã€‚
 
 void CServerDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ÓÃÓÚ»æÖÆµÄÉè±¸ÉÏÏÂÎÄ
+		CPaintDC dc(this); // ç”¨äºç»˜åˆ¶çš„è®¾å¤‡ä¸Šä¸‹æ–‡
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Ê¹Í¼±êÔÚ¹¤×÷Çø¾ØĞÎÖĞ¾ÓÖĞ
+		// ä½¿å›¾æ ‡åœ¨å·¥ä½œåŒºçŸ©å½¢ä¸­å±…ä¸­
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -138,7 +158,7 @@ void CServerDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// »æÖÆÍ¼±ê
+		// ç»˜åˆ¶å›¾æ ‡
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -147,8 +167,8 @@ void CServerDlg::OnPaint()
 	}
 }
 
-//µ±ÓÃ»§ÍÏ¶¯×îĞ¡»¯´°¿ÚÊ±ÏµÍ³µ÷ÓÃ´Ëº¯ÊıÈ¡µÃ¹â±ê
-//ÏÔÊ¾¡£
+//å½“ç”¨æˆ·æ‹–åŠ¨æœ€å°åŒ–çª—å£æ—¶ç³»ç»Ÿè°ƒç”¨æ­¤å‡½æ•°å–å¾—å…‰æ ‡
+//æ˜¾ç¤ºã€‚
 HCURSOR CServerDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -158,7 +178,100 @@ HCURSOR CServerDlg::OnQueryDragIcon()
 
 void CServerDlg::OnBnClickedButtonServerStart()
 {
+#ifdef SHOW_TRACE
+	TRACE("click --CServerDlg::OnBnClickedStart-\n");
+#endif
+
+	if (m_pServer->Start(ADDRESS,HTTP_PORT))
+	{
+#ifdef SHOW_TRACE
+		TRACE("server start success!!!\n");
+#endif
+		
+		m_pHelp->LogServerStart(ADDRESS,HTTP_PORT,HTTP_NAME);
+		setServerState(ST_STARTED);
+
+	}else{
+
+#ifdef SHOW_TRACE
+			TRACE("server start failse!!!\n");
+#endif
+		m_pHelp->LogServerStartFail(m_pServer->GetLastError(),m_pServer->GetLastErrorDesc(),HTTP_NAME);
+	//	SetAppState(ST_STOPPED);
+
+	}
+
+
+}
+
+
+void CServerDlg::OnDestroy()
+{
+
+	CHelp::destory();
+	if (m_pServerPtr!=NULL)
+	{
+			delete m_pServerPtr;
+	}
+
+	if (NULL != m_pServer)
+	{
+		delete m_pServer;
+	}
 	
+	if (NULL != m_pServerListener)
+	{
+		delete m_pServerListener;
+	}
 
 
+	CDialogEx::OnDestroy();
+}
+
+
+//void CServerDlg::OnBnClickedButtonStop()
+//{
+//	// TODO: Ã”ÃšÂ´Ã‹ÃŒÃ­Â¼Ã“Â¿Ã˜Â¼Ã¾ÃÂ¨Ã–ÂªÂ´Â¦Ã€Ã­Â³ÃŒÃÃ²Â´ÃºÃ‚Ã«
+//#ifdef SHOW_TRACE
+//		TRACE(_T("click --CServerDlg::OnBnClickedStop-\n"));
+//#endif
+//	
+//	if(!m_pServer->Stop()){
+//		ASSERT(FALSE);
+//	}
+//
+//
+//}
+
+
+// è®¾ç½®çŠ¶æ€
+
+
+void CServerDlg::setServerState(EnAppState state)
+{
+
+	if (this->GetSafeHwnd() ==nullptr)
+	{
+		return ;
+	}
+
+	GetDlgItem(IDC_BUTTON_Server_Start)->EnableWindow(state == ST_STOPPED);
+	GetDlgItem(IDC_BUTTON_Sever_Stop)->EnableWindow(state == ST_STARTED);
+	//GetDlgItem(idc_)
+}
+
+
+void CServerDlg::OnClickedButtonSeverStop()
+{
+	// TODO: Ã”ÃšÂ´Ã‹ÃŒÃ­Â¼Ã“Â¿Ã˜Â¼Ã¾ÃÂ¨Ã–ÂªÂ´Â¦Ã€Ã­Â³ÃŒÃÃ²Â´ÃºÃ‚Ã«
+	
+#ifdef SHOW_TRACE
+	TRACE(_T("click --CServerDlg::OnBnClickedStop-\n"));
+#endif
+
+	if(!m_pServer->Stop()){
+		ASSERT(FALSE);
+	}
+	m_pHelp->LogServerStop(HTTP_NAME);
+	setServerState(ST_STOPPED);
 }
