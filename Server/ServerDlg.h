@@ -50,4 +50,5 @@ public:
 //	void SetServerState(void);
 	void setServerState(EnAppState state);
 	afx_msg void OnClickedButtonSeverStop();
+	afx_msg void OnBnClickedButtonTest();
 };

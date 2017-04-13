@@ -23,6 +23,7 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="HPSocket_UD.dll" />
+    <None Include="Jsondll2.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -58,6 +59,33 @@
     <ClInclude Include="http\SocketInterface.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Dispatcher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\autolink.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\features.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\forwards.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\json.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\reader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\value.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json\writer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -78,6 +106,9 @@
     <ClCompile Include="http\HttpServerListenerImpl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Dispatcher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Server.rc">
@@ -86,5 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="HPSocket_UD.lib" />
+    <Library Include="Jsondll2.lib" />
   </ItemGroup>
 </Project>

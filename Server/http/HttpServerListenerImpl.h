@@ -33,6 +33,8 @@ public:
 	virtual EnHttpParseResult OnHeader(IHttpServer* pSender, CONNID dwConnID, LPCSTR lpszName, LPCSTR lpszValue){
 		TRACE("-------CHttpServerListenerImpl--------OnHeader------------------\n");
 		//m_pHelp->PostOnHeader(dwConnID, lpszName, lpszValue, m_strName);
+		
+
 		return HPR_OK;
 	}
 
@@ -54,7 +56,7 @@ public:
 	//OnAccept()
 	virtual	EnHttpParseResult OnHeadersComplete(IHttpServer* pSender, CONNID dwConnID){
 		TRACE("-------CHttpServerListenerImpl--------OnHeadersComplete------------------\n");
-		CStringA strSummary = GetHeaderSummary(pSender,dwConnID,"  ",0,TRUE);
+		//CStringA strSummary = GetHeaderSummary(pSender,dwConnID,"  ",0,TRUE);
 
 	//	TRACE("Http head = %s\n",strSummary);
 	
@@ -72,13 +74,18 @@ public:
 
 		//就是在onBody中解析post请求的消息体
 		//m_pHelp->PostOnBody(dwConnID,pData,iLength,m_strName);
-		CStringA str;
+		/*CStringA str;
 		CStringA s;
 		for(int i = 0;i<iLength;i++){
 			str.Format("%c",pData[i]);
 			s+=str;
-		}
-		TRACE("----pData=%s--\n",s);
+		}*/
+
+
+#ifdef SHOW_TRACE
+		
+#endif
+
 
 		return HPR_OK;
 	}
