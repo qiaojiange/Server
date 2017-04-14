@@ -3,6 +3,7 @@
 #include "Help.h"
 #include "bufferptr.h"
 //#include "helper.h"
+#include "../Dispatcher.h"
 
 //使用help，而不是用helper.h，是因为我想全部使用纯面向对象
 
@@ -72,19 +73,18 @@ public:
 	virtual EnHttpParseResult OnBody(IHttpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength){
 		TRACE("-------CHttpServerListenerImpl--------OnBody------------------\n");
 
+		CDispatcher::DispatchCommand(dwConnID,pData,iLength);
 		//就是在onBody中解析post请求的消息体
 		//m_pHelp->PostOnBody(dwConnID,pData,iLength,m_strName);
-		/*CStringA str;
+	/*	CStringA str;
 		CStringA s;
 		for(int i = 0;i<iLength;i++){
 			str.Format("%c",pData[i]);
 			s+=str;
 		}*/
 
+		//TRACE(s);
 
-#ifdef SHOW_TRACE
-		
-#endif
 
 
 		return HPR_OK;

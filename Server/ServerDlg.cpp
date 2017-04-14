@@ -281,20 +281,47 @@ void CServerDlg::OnClickedButtonSeverStop()
 
 void CServerDlg::OnBnClickedButtonTest()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
-	char* str =  "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
-	Json::Reader reader;
+	
+	//char* str =  "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
+	//Json::Reader reader;
+	//Json::Value root;
+	//if (reader.parse(str,root))
+	//{
+	//	std::string uploadid = root["uploadid"].asString();
+	//	CStringA strUploadid;
+	//	strUploadid.Format("%s",uploadid.c_str());
+	//	TRACE(strUploadid);
+	//	//TRACE(_T("-----%s"),uploadid.c_str());
+	//	//TRACE(_T(uploadid));
+	//	int code = root["code"].asInt();
+	//	TRACE(_T("---code = %d"),code);
+	//}
+
 	Json::Value root;
-	if (reader.parse(str,root))
-	{
-		std::string uploadid = root["uploadid"].asString();
-		CStringA strUploadid;
-		strUploadid.Format("%s",uploadid.c_str());
-		TRACE(strUploadid);
-		//TRACE(_T("-----%s"),uploadid.c_str());
-		//TRACE(_T(uploadid));
-		int code = root["code"].asInt();
-		TRACE(_T("---code = %d"),code);
-	}
+	Json::Value device;
+	device["device"]="camera";
+	Json::Value operate;
+	operate["operate"] = "connect";
+
+	Json::Value parameter;
+	parameter["parameter"] = "parameter";
+
+	root["command"].append(device);
+	root["command"].append(operate);
+	root["command"].append(parameter);
+	//有格式输出
+	std::string strTemp = root.toStyledString();
+	CStringA strTempA;
+	strTempA.Format("%s",strTemp.c_str());
+	
+	//输出无格式json字符串
+	Json::FastWriter writer;
+	strTemp = writer.write(root);
+	strTempA.Format("%s",strTemp.c_str());
+
+	TRACE(strTempA);
+
+
+
 
 }

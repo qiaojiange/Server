@@ -101,6 +101,7 @@
     <None Include="res\Server.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraProxy.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="http\bufferptr.h" />
     <ClInclude Include="http\Help.h" />
@@ -123,6 +124,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CameraProxy.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="http\bufferptr.cpp" />
     <ClCompile Include="http\Help.cpp" />

@@ -86,6 +86,9 @@
     <ClInclude Include="json\writer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CameraProxy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -107,6 +110,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Dispatcher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraProxy.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
