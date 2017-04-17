@@ -24,6 +24,7 @@
     </None>
     <None Include="HPSocket_UD.dll" />
     <None Include="Jsondll2.dll" />
+    <None Include="lucamapi.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -89,6 +90,18 @@
     <ClInclude Include="CameraProxy.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ccd\lucamapi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ccd\lucamerr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ccd\lucamsci.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -115,6 +128,9 @@
     <ClCompile Include="CameraProxy.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Server.rc">
@@ -124,5 +140,6 @@
   <ItemGroup>
     <Library Include="HPSocket_UD.lib" />
     <Library Include="Jsondll2.lib" />
+    <Library Include="lucamapi.lib" />
   </ItemGroup>
 </Project>

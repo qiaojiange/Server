@@ -1,6 +1,7 @@
 #pragma once
 #include "http/HPSocket.h"
 #include "json/json.h"
+#include "CameraProxy.h"
 
 class CDispatcher
 {
@@ -8,7 +9,7 @@ public:
 	CDispatcher(void);
 	~CDispatcher(void);
 
-	static void DispatchCommand( CONNID dwConnID, const BYTE* pData, int iLength)
+	static void DispatchCommand(IHttpServer* pSend, CONNID dwConnID, const BYTE* pData, int iLength)
 	{
 		CStringA strData;
 		ByteToChar(pData,iLength,strData);
@@ -20,8 +21,11 @@ public:
 		{
 			TRACE("----parse ----true\n");
 			std::string device = root["device"].asString();
-			/*TRACE(device)
-			TRACE("\n");*/
+			if (0==strcmp(device.c_str(),"camera"))
+			{
+				m_pCameraProxy->handJsonData(pSend,dwConnID,strData);
+			}
+
 
 		}
 
@@ -39,5 +43,6 @@ private:
 		}
 	}
 
+	static CCameraProxy* m_pCameraProxy;
 };
 

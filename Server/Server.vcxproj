@@ -96,12 +96,17 @@
   <ItemGroup>
     <None Include="HPSocket_UD.dll" />
     <None Include="Jsondll2.dll" />
+    <None Include="lucamapi.dll" />
     <None Include="ReadMe.txt" />
     <None Include="res\Server.ico" />
     <None Include="res\Server.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraProxy.h" />
+    <ClInclude Include="ccd\lucamapi.h" />
+    <ClInclude Include="ccd\lucamerr.h" />
+    <ClInclude Include="ccd\lucamsci.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="http\bufferptr.h" />
     <ClInclude Include="http\Help.h" />
@@ -124,6 +129,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraProxy.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="http\bufferptr.cpp" />
@@ -142,6 +148,7 @@
   <ItemGroup>
     <Library Include="HPSocket_UD.lib" />
     <Library Include="Jsondll2.lib" />
+    <Library Include="lucamapi.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

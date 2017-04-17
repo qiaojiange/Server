@@ -73,10 +73,10 @@ public:
 	virtual EnHttpParseResult OnBody(IHttpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength){
 		TRACE("-------CHttpServerListenerImpl--------OnBody------------------\n");
 
-		CDispatcher::DispatchCommand(dwConnID,pData,iLength);
+		CDispatcher::DispatchCommand(pSender,dwConnID,pData,iLength);
 		//就是在onBody中解析post请求的消息体
 		//m_pHelp->PostOnBody(dwConnID,pData,iLength,m_strName);
-	/*	CStringA str;
+		/*CStringA str;
 		CStringA s;
 		for(int i = 0;i<iLength;i++){
 			str.Format("%c",pData[i]);
@@ -229,23 +229,27 @@ public:
 
 		//TRACE("----------return HPR_OK;-------\n");
 	
-		CFile file(_T("e:/temp.jpg"),CFile::modeRead);
-		ULONGLONG length = file.GetLength();
-		BYTE* pData = new BYTE[length];
-		file.Read(pData,length);
-		CStringA strContentLength;
-		strContentLength.Format("%u",length);
-		THeader header[]  = {{"Content-Type","image"},{"Content-Length",strContentLength}};
-		int iHeaderCount = sizeof(header)/sizeof(THeader);
-		pSender->SendResponse(dwConnID,HSC_OK,"HP Http Server OK",header,iHeaderCount,pData,length);
 
-		
-		if (!pSender->IsKeepAlive(dwConnID))
-		{
-			pSender->Release(dwConnID);
-		}
 
-		delete[] pData;
+////发送文件
+//		CFile file(_T("e:/temp.jpg"),CFile::modeRead);
+//		ULONGLONG length = file.GetLength();
+//		BYTE* pData = new BYTE[length];
+//		file.Read(pData,length);
+//		CStringA strContentLength;
+//		strContentLength.Format("%u",length);
+//		THeader header[]  = {{"Content-Type","image"},{"Content-Length",strContentLength}};
+//		int iHeaderCount = sizeof(header)/sizeof(THeader);
+//		pSender->SendResponse(dwConnID,HSC_OK,"HP Http Server OK",header,iHeaderCount,pData,length);
+//
+//		
+//		if (!pSender->IsKeepAlive(dwConnID))
+//		{
+//			pSender->Release(dwConnID);
+//		}
+//
+//		delete[] pData;
+
 		return HPR_OK;
 	}	
 	
