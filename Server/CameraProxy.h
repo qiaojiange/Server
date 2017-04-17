@@ -98,33 +98,70 @@ public:
 						response["status"] = CAMERA_STATUS_OK;
 					}
 					response["describe"]= m_pCamera->getCCDMessageCStringA().GetBuffer(0);
-					
-					//Json::Value parameterList;
+					response["deviceName"] = "camera";
+
 					Json::Value parameter1;
-					parameter1["name"]="width";
-					parameter1["val"] = width;
-					response["parameterList"].append(parameter1);
-					
-					Json::Value parameter2;
-					parameter2["name"]="heigh";
-					parameter2["val"] = heigh;
-					response["parameterList"].append(parameter2);
-					
-					Json::Value parameter3;
-					parameter3["name"]="gain";
-					parameter3["val"] = gain;
-					response["parameterList"].append(parameter3);
-
-					Json::Value parameter4;
-					parameter4["name"]="exposure";
-					parameter4["val"] = exposure;
-					response["parameterList"].append(parameter4);
-
 				
-					Json::Value parameter5;
-					parameter5["name"]="is8Bit";
-					parameter5["val"] = is8Bit;
-					response["parameterList"].append(parameter5);
+					parameter1["width"] = width;
+					
+					parameter1["heigh"] = heigh;
+					
+					parameter1["gain"] = gain;
+					
+					parameter1["exposure"] = exposure;
+
+					parameter1["is8Bit"] = is8Bit;
+
+					parameter1["xOffset"] = xOffset;
+					
+					parameter1["yOffset"] = yOffset;
+
+					
+					Json::FastWriter write;
+					response["device"] = write.write(parameter1);
+
+					std::string result = write.write(response);
+
+					CStringA strContentLength;
+					strContentLength.Format("%d",result.length());
+					THeader header[] = { {"Content-Type","text/plain"},{"Content-Length",strContentLength}};
+					pSend->SendResponse(dwConnID,HSC_OK,"Server OK",header,sizeof(header)/sizeof(THeader),(BYTE*)result.c_str(),result.length());
+				
+				}
+				break;
+
+			case CAMERA_SET_PARAMETER:{
+				INT width = 0;
+				INT heigh = 0;
+				FLOAT gain = 0.0f;
+				FLOAT exposure = 0.0f;
+				int xOffset = 0;
+				int yOffset = 0;
+				BOOL is8Bit = FALSE;
+
+				std::string strCamera = request["device"].asString();
+				Json::Value root;
+				if (reader.parse(strCamera.c_str(),root))
+				{
+					width = root["width"].asInt();
+					heigh = root["heigh"].asInt();
+					//TRACE("----width=%d---heigh = %d--\n",width,heigh);
+					gain = root["gain"].asDouble();
+					exposure = root["exposure"].asDouble();
+					xOffset = root["xOffset"].asInt();
+					yOffset = root["yOffset"].asInt();
+					is8Bit = root["is8Bit"].asBool();
+
+					if (CAMERA_STATUS_ERROR == m_pCamera->setCameraParameter(exposure,width,heigh,gain,xOffset,yOffset,is8Bit))
+					{
+						response["status"] = CAMERA_STATUS_ERROR;		
+					}else{
+						response["status"] = CAMERA_STATUS_OK;
+					}
+
+					response["describe"] = m_pCamera->getCCDMessageCStringA().GetBuffer(0);
+					response["deviceName"] = "camera";
+
 
 					Json::FastWriter write;
 					std::string result = write.write(response);
@@ -133,14 +170,11 @@ public:
 					strContentLength.Format("%d",result.length());
 					THeader header[] = { {"Content-Type","text/plain"},{"Content-Length",strContentLength}};
 					pSend->SendResponse(dwConnID,HSC_OK,"Server OK",header,sizeof(header)/sizeof(THeader),(BYTE*)result.c_str(),result.length());
-				
-					
+	
 				}
-				break;
 
-			case CAMERA_SET_PARAMETER:
-								
-
+			}
+			
 				break;
 
 			case CAMERA_START_PREVIEW:

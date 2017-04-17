@@ -65,7 +65,7 @@ public:
 
 	//	m_pHelp->PostOnHeadersComplete(dwConnID,strSummary,m_strName);
 
-		//pSender->GetUrlField()
+	
 		return HPR_OK;
 	}
 

@@ -91,7 +91,7 @@ CameraStatus CCamera::connect(ULONG ulCamera)
 
 		return CAMERA_STATUS_ERROR;
 	}
-	return CAMERA_STATUS_OK;
+	
 }
 
 CameraStatus CCamera::disconect()
@@ -167,7 +167,7 @@ CameraStatus CCamera::stopPreview(HWND hwnd)
 
 CameraStatus CCamera::setCameraParameter(FLOAT& exposure,INT& width,INT& heigh,FLOAT& gain,INT xOffset,INT& yOffset,BOOL is8Bit)
 {
-	if (m_hCamera == NULL)
+	if (m_hCamera == NULL || !m_bConnected )
 	{
 		this->csMsg.Format(_T("cannot connect camera"));
 		return CAMERA_STATUS_ERROR;
@@ -210,9 +210,12 @@ CameraStatus CCamera::setCameraParameter(FLOAT& exposure,INT& width,INT& heigh,F
 				this->csMsg.Format(_T("Unable to set camera video format."));
 				return CAMERA_STATUS_ERROR;
 			}
-
 		}
-		startPreview(m_hwnd);
+		if (m_hwnd != NULL)
+		{
+			startPreview(m_hwnd);
+		}
+	
 
 		return CAMERA_STATUS_OK;
 	}
@@ -236,7 +239,7 @@ CameraStatus CCamera::getCameraParameter(FLOAT& exposure,INT& width,INT& heigh,F
 		m_fFrameRate = 100000.0;
 		is8Bit = m_frameFormat.pixelFormat==LUCAM_PF_8?TRUE:FALSE;
 		this->getGain(gain);
-
+		this->csMsg.Format(_T("get parameter successfully."));
 		return CAMERA_STATUS_OK;
 
 	}

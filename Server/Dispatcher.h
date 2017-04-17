@@ -20,7 +20,7 @@ public:
 		if (reader.parse(strData.GetBuffer(0),root))
 		{
 			TRACE("----parse ----true\n");
-			std::string device = root["device"].asString();
+			std::string device = root["deviceName"].asString();
 			if (0==strcmp(device.c_str(),"camera"))
 			{
 				m_pCameraProxy->handJsonData(pSend,dwConnID,strData);
