@@ -5,11 +5,11 @@ CCamera* CCamera::m_pCamera = NULL;
 
 CCamera::CCamera(void)
 {
-	this->m_bConnected =FALSE;
+	this->m_bConnected = FALSE;
 
 	this->m_bInitMode = FALSE;
 	
-	this->m_bPreviewing =FALSE;
+	this->m_bPreviewing = FALSE;
 
 }
 
@@ -98,10 +98,11 @@ CameraStatus CCamera::disconect()
 {
 	if (m_bPreviewing)
 	{
-		if (IDYES == AfxMessageBox(_T("Currently previewing. Do you wish to stop?"), MB_YESNOCANCEL)) {
-			//OnBnClickedButtonPreview();
-		}
-		else return CAMERA_STATUS_ERROR;
+		//if (IDYES == AfxMessageBox(_T("Currently previewing. Do you wish to stop?"), MB_YESNOCANCEL)) {
+		//	//OnBnClickedButtonPreview();
+		//}
+		//else return CAMERA_STATUS_ERROR;
+		stopPreview(m_hwnd);
 	}
 
 	if (!m_hCamera || !m_bConnected)
@@ -114,7 +115,9 @@ CameraStatus CCamera::disconect()
 	{
 		this->csMsg.Format(_T("Unable to disconnect to the camera."));
 		return CAMERA_STATUS_ERROR;
+
 	}else{
+
 		this->csMsg.Format(_T("disconnect to the camera successfully."));
 		m_bConnected = FALSE;
 		m_hCamera = NULL;
@@ -126,18 +129,19 @@ CameraStatus CCamera::disconect()
 
 CameraStatus CCamera::startPreview(HWND hwnd)
 {
-	if (m_hCamera ==NULL)
+	if (m_hCamera ==NULL || !m_bConnected)
 	{
 		this->csMsg.Format(_T("disconnect camera"));
 		return CAMERA_STATUS_ERROR;
+
 	}else{
 		this->m_hwnd = hwnd;
 		if (!LucamStreamVideoControl(m_hCamera,START_DISPLAY,hwnd))
 		{
-			this->csMsg.Format(_T("cannot play video"));
+			this->csMsg.Format(_T("preview failure!"));
 			return CAMERA_STATUS_ERROR;
 		}else{
-			this->csMsg.Format(_T("is play video"));
+			this->csMsg.Format(_T("preview successfully"));
 			this->m_bPreviewing = TRUE;
 			return CAMERA_STATUS_OK;
 		}
@@ -146,20 +150,23 @@ CameraStatus CCamera::startPreview(HWND hwnd)
 
 CameraStatus CCamera::stopPreview(HWND hwnd)
 {
-	if (m_hCamera == NULL)
+	if (m_hCamera == NULL || !m_bConnected)
 	{
 		this->csMsg.Format(_T("cannot connect camera"));
 		return CAMERA_STATUS_ERROR;
 
 	}else{
+
 		this->m_hwnd = hwnd;
+		TRACE(_T("----------stopPreview-------\n"));
 		if (!LucamStreamVideoControl(m_hCamera,STOP_STREAMING,hwnd))
 		{
 			this->csMsg.Format(_T("cannot stop to play video"));
 			return CAMERA_STATUS_ERROR;
 		}else{
+			TRACE(_T("----------LucamStreamVideoControl---true----\n"));
 			this->m_bPreviewing = FALSE;
-			this->csMsg.Format(_T("stop preview"));
+			this->csMsg.Format(_T("stop preview successfully"));
 			return CAMERA_STATUS_OK;
 		}
 	}

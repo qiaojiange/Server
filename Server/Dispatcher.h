@@ -3,6 +3,7 @@
 #include "json/json.h"
 #include "CameraProxy.h"
 
+
 class CDispatcher
 {
 public:
@@ -24,6 +25,10 @@ public:
 			if (0==strcmp(device.c_str(),"camera"))
 			{
 				m_pCameraProxy->handJsonData(pSend,dwConnID,strData);
+			}else if(0==strcmp(device.c_str(),"lctf")){
+
+			}else{
+
 			}
 
 

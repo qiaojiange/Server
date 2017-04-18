@@ -7,6 +7,10 @@
 #include "http/Help.h"
 #include "http/HPSocket.h"
 #include "http/HttpServerListenerImpl.h"
+
+#include "Server.h"
+//class CCameraProxy;
+
 // CServerDlg ¶Ô»°¿ò
 class CServerDlg : public CDialogEx
 {
@@ -40,7 +44,7 @@ private :
 	static const LPCTSTR ADDRESS;
 
 	CHelp* m_pHelp;
-	CHttpServerListenerImpl* m_pServerListener;
+ 	CHttpServerListenerImpl* m_pServerListener;
 	CHttpServerPtr* m_pServerPtr;
 	IHttpServer* m_pServer;
 public:
@@ -51,4 +55,8 @@ public:
 	void setServerState(EnAppState state);
 	afx_msg void OnClickedButtonSeverStop();
 	afx_msg void OnBnClickedButtonTest();
+
+	
+public:
+	static HWND hwndPic;
 };

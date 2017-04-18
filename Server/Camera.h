@@ -174,7 +174,7 @@ class CCamera
 {
 private:
 	CCamera(void);
-	~CCamera(void);
+	
 	
 	static CCamera* m_pCamera;
 
@@ -191,6 +191,8 @@ private:
 	//static CGarbo garbo;//定义一个静态成员变量，程序结束时，系统会自动调用它的析构函数。
 
 public:
+	~CCamera(void);
+
 	static CCamera* getInstance(){
 		if (m_pCamera == NULL)
 		{

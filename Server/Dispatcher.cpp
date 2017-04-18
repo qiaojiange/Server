@@ -12,4 +12,5 @@ CDispatcher::CDispatcher(void)
 CDispatcher::~CDispatcher(void)
 {
 	/*delete m_pCamera;*/
+	delete m_pCameraProxy;
 }

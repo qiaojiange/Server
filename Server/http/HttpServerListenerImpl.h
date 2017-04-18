@@ -26,11 +26,13 @@ public:
 		//m_pHelp->PostOnSend(dwConnID,pData,iLength,m_strName);
 		return HR_OK;
 	}
+
 	virtual EnHandleResult  OnHandShake(ITcpServer* pSender, CONNID dwConnID){
 		TRACE("-------CHttpServerListenerImpl--------OnHandShake------------------\n");
 		//m_pHelp->PostOnHandShake(dwConnID, m_strName);
 		return HR_OK;
 	}
+
 	virtual EnHttpParseResult OnHeader(IHttpServer* pSender, CONNID dwConnID, LPCSTR lpszName, LPCSTR lpszValue){
 		TRACE("-------CHttpServerListenerImpl--------OnHeader------------------\n");
 		//m_pHelp->PostOnHeader(dwConnID, lpszName, lpszValue, m_strName);
@@ -45,6 +47,7 @@ public:
 
 		return HPR_OK;
 	}
+
 	virtual EnHttpParseResult OnRequestLine(IHttpServer* pSender, CONNID dwConnID, LPCSTR lpszMethod, LPCSTR lpszUrl){
 		TRACE("-------CHttpServerListenerImpl--------OnRequestLine------------------\n");
 
@@ -74,6 +77,7 @@ public:
 		TRACE("-------CHttpServerListenerImpl--------OnBody------------------\n");
 
 		CDispatcher::DispatchCommand(pSender,dwConnID,pData,iLength);
+
 		//就是在onBody中解析post请求的消息体
 		//m_pHelp->PostOnBody(dwConnID,pData,iLength,m_strName);
 		/*CStringA str;

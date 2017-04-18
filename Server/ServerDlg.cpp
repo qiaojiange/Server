@@ -8,6 +8,8 @@
 #include "afxdialogex.h"
 #include "json/json.h"
 
+//#include "CameraProxy.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -51,6 +53,8 @@ END_MESSAGE_MAP()
 
  const LPCTSTR CServerDlg::ADDRESS = _T("127.0.0.1");
  const USHORT CServerDlg::HTTP_PORT = 8888;
+
+ HWND CServerDlg::hwndPic = NULL;
 
 CServerDlg::CServerDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CServerDlg::IDD, pParent)
@@ -124,6 +128,9 @@ BOOL CServerDlg::OnInitDialog()
 	m_pHelp->setMainWnd(this);
 	m_pHelp->setInfoList(&m_ServerInfo);
 
+	//获取图片控件句柄
+	hwndPic = GetDlgItem(IDC_STATIC_Picture)->GetSafeHwnd();
+	theApp.m_hwndPic = hwndPic;
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 

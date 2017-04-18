@@ -13,7 +13,8 @@
 
 // CServerApp:
 // 有关此类的实现，请参阅 Server.cpp
-//
+
+//#include "ServerDlg.h"
 
 class CServerApp : public CWinApp
 {
@@ -27,6 +28,14 @@ public:
 // 实现
 
 	DECLARE_MESSAGE_MAP()
+
+
+//public:
+//	CServerDlg* m_pServerDlg;
+
+//解决办法一
+public:
+	HWND m_hwndPic;
 };
 
 extern CServerApp theApp;
