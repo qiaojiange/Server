@@ -118,13 +118,6 @@ BOOL CServerDlg::OnInitDialog()
 
 	m_pHelp = CHelp::newInstance();
 
-	//初始化接口
-	m_pServerListener = new CHttpServerListenerImpl(HTTP_NAME);
-
-	m_pServerPtr = new CHttpServerPtr(m_pServerListener);
-	m_pServer = *m_pServerPtr;
-
-
 	m_pHelp->setMainWnd(this);
 	m_pHelp->setInfoList(&m_ServerInfo);
 
@@ -187,16 +180,24 @@ HCURSOR CServerDlg::OnQueryDragIcon()
 
 void CServerDlg::OnBnClickedButtonServerStart()
 {
+
 #ifdef SHOW_TRACE
 	TRACE("click --CServerDlg::OnBnClickedStart-\n");
 #endif
+
+	//初始化接口
+	m_pServerListener = new CHttpServerListenerImpl(HTTP_NAME);
+
+	m_pServerPtr = new CHttpServerPtr(m_pServerListener);
+	m_pServer = *m_pServerPtr;
+
 
 	if (m_pServer->Start(ADDRESS,HTTP_PORT))
 	{
 #ifdef SHOW_TRACE
 		TRACE("server start success!!!\n");
 #endif
-		
+		m_pServer->SetMaxConnectionCount(1);
 		m_pHelp->LogServerStart(ADDRESS,HTTP_PORT,HTTP_NAME);
 		setServerState(ST_STARTED);
 
@@ -238,20 +239,6 @@ void CServerDlg::OnDestroy()
 }
 
 
-//void CServerDlg::OnBnClickedButtonStop()
-//{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
-//#ifdef SHOW_TRACE
-//		TRACE(_T("click --CServerDlg::OnBnClickedStop-\n"));
-//#endif
-//	
-//	if(!m_pServer->Stop()){
-//		ASSERT(FALSE);
-//	}
-//
-//
-//}
-
 
 // 设置状态
 
@@ -271,9 +258,7 @@ void CServerDlg::setServerState(EnAppState state)
 
 
 void CServerDlg::OnClickedButtonSeverStop()
-{
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
-	
+{	
 #ifdef SHOW_TRACE
 	TRACE(_T("click --CServerDlg::OnBnClickedStop-\n"));
 #endif
@@ -281,6 +266,17 @@ void CServerDlg::OnClickedButtonSeverStop()
 	if(!m_pServer->Stop()){
 		ASSERT(FALSE);
 	}
+
+	if (m_pServerListener!=NULL)
+	{
+		delete m_pServerListener;
+	}
+
+	if (m_pServer != NULL)
+	{
+		delete m_pServer;
+	}
+
 	m_pHelp->LogServerStop(HTTP_NAME);
 	setServerState(ST_STOPPED);
 }

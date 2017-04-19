@@ -5,13 +5,19 @@
 
 CHttpServerListenerImpl::CHttpServerListenerImpl(void)
 {
+	TRACE("---CHttpServerListenerImpl::CHttpServerListenerImpl(void)-----\n");
 	m_pHelp = CHelp::newInstance();
+	m_pDispatcher = CDispatcher::newInstance();
 }
 
 
 CHttpServerListenerImpl::~CHttpServerListenerImpl(void)
 {
-
+	TRACE("---CHttpServerListenerImpl::~CHttpServerListenerImpl(void)-----\n");
+	if (m_pDispatcher !=NULL)
+	{
+		delete m_pDispatcher;
+	}
 }
 
 

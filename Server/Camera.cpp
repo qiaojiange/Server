@@ -3,24 +3,31 @@
 
 CCamera* CCamera::m_pCamera = NULL;
 
-CCamera::CCamera(void)
+CCamera::CCamera()
 {
+	TRACE("---CCamera::CCamera(void)--construct---\n");
 	this->m_bConnected = FALSE;
 
 	this->m_bInitMode = FALSE;
 	
 	this->m_bPreviewing = FALSE;
+	this->m_hCamera = NULL;
+	this->m_hwnd = NULL;
+
 
 }
 
 
 CCamera::~CCamera(void)
 {
-
+	TRACE("----CCamera::~CCamera(void)------\n");
 	if (m_bConnected)
 	{
 		this->disconect();
+		
 	}
+	m_hCamera = NULL;
+	m_pCamera = NULL;
 }
 
 CameraStatus CCamera::getGain(FLOAT& fGain)
@@ -73,11 +80,13 @@ CameraStatus CCamera::connect(ULONG ulCamera)
 	}
 
 	if(ulCamera<1){
-		//this->msg = _T("Invlid camera number.");
 		this->csMsg.Format(_T("Invlid camera number."));
 		return CAMERA_STATUS_ERROR;
 	}
-
+	if(m_hCamera!=NULL){
+		TRACE("-----m_hCamera!=NULL-----\n");
+		disconect();
+	}
 	m_hCamera = LucamCameraOpen(ulCamera);
 	if (m_hCamera != NULL)
 	{
@@ -102,10 +111,11 @@ CameraStatus CCamera::disconect()
 		//	//OnBnClickedButtonPreview();
 		//}
 		//else return CAMERA_STATUS_ERROR;
-		stopPreview(m_hwnd);
+
+		stopPreview();
 	}
 
-	if (!m_hCamera || !m_bConnected)
+	if (NULL== m_hCamera )
 	{
 		this->csMsg.Format(_T("camera is not connect,please connect camera firstly!"));
 		return CAMERA_STATUS_ERROR;
@@ -148,18 +158,18 @@ CameraStatus CCamera::startPreview(HWND hwnd)
 	}
 }
 
-CameraStatus CCamera::stopPreview(HWND hwnd)
+CameraStatus CCamera::stopPreview()
 {
-	if (m_hCamera == NULL || !m_bConnected)
+	if (m_hCamera == NULL || !m_bConnected || !m_bPreviewing)
 	{
 		this->csMsg.Format(_T("cannot connect camera"));
 		return CAMERA_STATUS_ERROR;
 
 	}else{
-
-		this->m_hwnd = hwnd;
+		
+		//this->m_hwnd = hwnd;
 		TRACE(_T("----------stopPreview-------\n"));
-		if (!LucamStreamVideoControl(m_hCamera,STOP_STREAMING,hwnd))
+		if (!LucamStreamVideoControl(m_hCamera,STOP_STREAMING,m_hwnd))
 		{
 			this->csMsg.Format(_T("cannot stop to play video"));
 			return CAMERA_STATUS_ERROR;
@@ -209,7 +219,7 @@ CameraStatus CCamera::setCameraParameter(FLOAT& exposure,INT& width,INT& heigh,F
 		//修改帧的格式，必须先停止预览，之后在进行预览就可以看到更新后的图像
 		if (m_bPreviewing)
 		{
-			stopPreview(m_hwnd);
+			stopPreview();
 			m_bPreviewing = FALSE;
 			//设置帧格式
 			if (!LucamSetFormat(m_hCamera,&m_frameFormat,frameRate))
@@ -490,7 +500,7 @@ CameraStatus CCamera::savePictureTo16TIFF()
 	}
 }
 
-CameraStatus CCamera::savePictureToJPEG()
+CameraStatus CCamera::savePictureToJPEG(CStringA& filePath)
 {
 	if(!this->m_bConnected){
 		this->csMsg.Format(_T("please connect ccd,then get Frame Data！"));
@@ -520,7 +530,7 @@ CameraStatus CCamera::savePictureToJPEG()
 
 			if (!takeImage(pbFrame))
 			{
-				AfxMessageBox(_T("Failed to capture image."),MB_OK);
+				this->csMsg.Format(_T("Failed to capture image."));
 				delete[] pbFrame;
 				return CAMERA_STATUS_ERROR;
 			}
@@ -547,16 +557,16 @@ CameraStatus CCamera::savePictureToJPEG()
 			}
 
 
-			if (!LucamSaveImageEx(m_hCamera,m_frameFormat.width,m_frameFormat.height,LUCAM_PF_24,pBitmap,"F:/temp.jpg"))
+			if (!LucamSaveImageEx(m_hCamera,m_frameFormat.width,m_frameFormat.height,LUCAM_PF_24,pBitmap,filePath.GetBuffer(0)))
 			{
 				this->csMsg.Format(_T("save to jpg picture failure！"));
-				TRACE(csMsg);
+				TRACE("---save to jpg picture failure！---\n");
 				return CameraStatus::CAMERA_STATUS_ERROR;
 			} 
 			else
 			{
 				this->csMsg.Format(_T("save to jpg picture success！"));
-				TRACE(csMsg);
+				TRACE("---save to jpg picture success！---\n");
 			}
 
 			delete[] pBitmap;

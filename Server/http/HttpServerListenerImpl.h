@@ -13,7 +13,9 @@ class CHttpServerListenerImpl :
 public:
 	CHttpServerListenerImpl(void);
 	CHttpServerListenerImpl(LPCTSTR lpszName):m_strName(lpszName){
+		TRACE("-----CHttpServerListenerImpl()-------\n");
 			m_pHelp = CHelp::newInstance();
+			m_pDispatcher = CDispatcher::newInstance();
 	}
 	~CHttpServerListenerImpl(void);
 private:
@@ -76,7 +78,7 @@ public:
 	virtual EnHttpParseResult OnBody(IHttpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength){
 		TRACE("-------CHttpServerListenerImpl--------OnBody------------------\n");
 
-		CDispatcher::DispatchCommand(pSender,dwConnID,pData,iLength);
+		 m_pDispatcher->DispatchCommand(pSender,dwConnID,pData,iLength);
 
 		//就是在onBody中解析post请求的消息体
 		//m_pHelp->PostOnBody(dwConnID,pData,iLength,m_strName);
@@ -333,5 +335,6 @@ public:
 
 	CStringA GetHeaderSummary(IHttpServer* pSender, CONNID dwConnID, LPCSTR lpszSep, int iSepCount, bool bWithContentLength);
 	CString m_strName;
+	CDispatcher * m_pDispatcher;
 };
 

@@ -173,23 +173,8 @@ public:
 class CCamera
 {
 private:
-	CCamera(void);
+	CCamera();
 	
-	
-	static CCamera* m_pCamera;
-
-	////实现垃圾回收器
-	//class CGarbo{//唯一的工作是在析构函数中删除CCarmera的实例
-	//public:
-	//	~CGarbo(){
-	//		if (CCamera::m_pCamera!=nullptr)
-	//		{
-	//			delete m_pCamera;
-	//		}
-	//	}
-	//};
-	//static CGarbo garbo;//定义一个静态成员变量，程序结束时，系统会自动调用它的析构函数。
-
 public:
 	~CCamera(void);
 
@@ -211,7 +196,7 @@ public:
 
 	//设置曝光时间
 	CameraStatus setExposure(float fExposure){
-		LONG lFlags;
+		//LONG lFlags;
 		if (m_hCamera!=NULL)
 		{
 			if (LucamSetProperty(m_hCamera,LUCAM_PROP_EXPOSURE,fExposure,0))
@@ -248,7 +233,7 @@ public:
 
 
 	//停止预览
-	CameraStatus stopPreview(HWND hwnd);
+	CameraStatus stopPreview();
 
 
 	CameraStatus setCameraParameter(FLOAT& exposure,INT& width,INT& heigh,FLOAT& gain,INT xOffset,INT& yOffset,BOOL is8Bit);
@@ -273,7 +258,7 @@ public:
 	CameraStatus savePictureTo16TIFF();
 
 	
-	CameraStatus savePictureToJPEG();
+	CameraStatus savePictureToJPEG(CStringA& fileName);
 
 	LPCTSTR getCCDMessage(){
 		LPCTSTR lpctStr = (LPCTSTR)csMsg;
@@ -330,6 +315,6 @@ private:
 	FLOAT m_fGAMMA;
 
 
-
+	static CCamera* m_pCamera ;
 };
 

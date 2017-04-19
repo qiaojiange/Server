@@ -1,3 +1,4 @@
+
 #include "StdAfx.h"
 #include "CameraProxy.h"
 #include "Server.h"
@@ -5,14 +6,26 @@
 
 CCameraProxy::CCameraProxy(void)
 {
-	m_pCamera= CCamera::getInstance();
+	TRACE("---------CCameraProxy::CCameraProxy(void)----------\n");
+	m_pCamera = CCamera::getInstance();
+	isSave = false;
+
+	m_filePathJpg.Format("D:/temp.jpg");
 }
 
 
 
 CCameraProxy::~CCameraProxy(void)
 {
-	delete m_pCamera;
+	TRACE("------CCameraProxy::~CCameraProxy(void)-------\n");
+	if (NULL != m_pCamera)
+	{
+		/*m_pCamera->stopPreview(theApp.m_hwndPic);
+		m_pCamera->disconect();*/
+
+		delete m_pCamera;
+	}
+
 }
 
 //处理json数据
@@ -43,24 +56,91 @@ void CCameraProxy::handJsonData(IHttpServer* pSend, CONNID dwConnID,CStringA& js
 			break;
 
 		case CAMERA_GET_PARAMETER:
+			TRACE("---CAMERA_GET_PARAMETER---\n");
 			getParameter(response, pSend, dwConnID);
 			break;
 
 		case CAMERA_SET_PARAMETER:
+			TRACE("---CAMERA_SET_PARAMETER---\n");
 			setParameter(request, reader, response, pSend, dwConnID);
 			break;
 
 		case CAMERA_START_PREVIEW:
+			TRACE("---CAMERA_START_PREVIEW---\n");
 			//开始预览---- 获取本地的图片，使用另一个方法，之后在调用的过程中包含该方法。即可获得本地的最新图片。
 			startPreview(response, cameraMsg, pSend, dwConnID);
 			break;
 
 		case CAMERA_STOP_PREVIEW:
+			TRACE("---CAMERA_STOP_PREVIEW---\n");
 			stopPreview(response, cameraMsg, pSend, dwConnID);
 			break;
 
 		case CAMERA_SAVE_PICTURE16:
+			//m_pCamera->savePictureTo16TIFF();
+			break;
+		case  CAMERA_TRANS_PICTURE:
+			{
+				TRACE("-----CAMERA_TRANS_PICTURE------\n");
 
+				if (!isSave)
+				{
+					
+					if (CAMERA_STATUS_ERROR == m_pCamera->savePictureToJPEG(m_filePathJpg))
+					{
+						response["status"] = CAMERA_STATUS_ERROR;
+					}else{
+						response["status"] = CAMERA_STATUS_OK;
+					}
+
+					cameraMsg = m_pCamera->getCCDMessageCStringA();
+					response["describe"] = cameraMsg.GetBuffer(0);
+
+
+					Json::FastWriter write;
+					std::string result = write.write(response);
+
+					CStringA strContentLength;
+					strContentLength.Format("%d",result.length());
+					THeader header[] = { {"Content-Type","text/plain"},{"Content-Length",strContentLength}};
+					pSend->SendResponse(dwConnID,HSC_OK,"Server OK",header,sizeof(header)/sizeof(THeader),(BYTE*)result.c_str(),result.length());
+
+					if (!pSend->IsKeepAlive(dwConnID))
+					{
+						pSend->Release(dwConnID);
+					}
+
+					isSave = true;
+
+				}else{
+
+					CString filePath;
+					filePath = m_filePathJpg;
+					CFile file(filePath,CFile::modeRead);
+					ULONGLONG length = file.GetLength();
+					BYTE* pData = new BYTE[length];
+					file.Read(pData,length);
+
+					CStringA strContentLength;
+					strContentLength.Format("%u",length);
+					THeader header[]  = {{"Content-Type","picture"},{"Content-Length",strContentLength}};
+					int iHeaderCount = sizeof(header)/sizeof(THeader);
+					pSend->SendResponse(dwConnID,HSC_OK,"HP Http Server OK",header,iHeaderCount,pData,length);
+
+
+					if (!pSend->IsKeepAlive(dwConnID))
+					{
+						pSend->Release(dwConnID);
+					}
+
+					isSave = false;
+
+				}
+			
+
+
+
+			}
 			break;
 		}
 
@@ -230,7 +310,7 @@ void CCameraProxy::startPreview(Json::Value &response, CStringA &cameraMsg, IHtt
 
 void CCameraProxy::stopPreview(Json::Value &response, CStringA &cameraMsg, IHttpServer* pSend, CONNID dwConnID)
 {
-	if (CAMERA_STATUS_ERROR == m_pCamera->stopPreview(theApp.m_hwndPic))
+	if (CAMERA_STATUS_ERROR == m_pCamera->stopPreview())
 	{
 		response["status"] = CAMERA_STATUS_ERROR;
 	}else{

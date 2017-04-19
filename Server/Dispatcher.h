@@ -6,48 +6,25 @@
 
 class CDispatcher
 {
-public:
+private:
 	CDispatcher(void);
+public:
 	~CDispatcher(void);
 
-	static void DispatchCommand(IHttpServer* pSend, CONNID dwConnID, const BYTE* pData, int iLength)
-	{
-		CStringA strData;
-		ByteToChar(pData,iLength,strData);
-		TRACE("--CDispatcher--%s--\n",strData.GetBuffer(0));
+	void DispatchCommand(IHttpServer* pSend, CONNID dwConnID, const BYTE* pData, int iLength);
 
-		Json::Reader reader;
-		Json::Value root;
-		if (reader.parse(strData.GetBuffer(0),root))
+	static CDispatcher* newInstance(){
+		if (m_pDispatcher == NULL)
 		{
-			TRACE("----parse ----true\n");
-			std::string device = root["deviceName"].asString();
-			if (0==strcmp(device.c_str(),"camera"))
-			{
-				m_pCameraProxy->handJsonData(pSend,dwConnID,strData);
-			}else if(0==strcmp(device.c_str(),"lctf")){
-
-			}else{
-
-			}
-
-
+			m_pDispatcher = new CDispatcher();
 		}
-
-
+		return m_pDispatcher;
 	}
 
-	
 private:
-	static void ByteToChar(const BYTE* pData,int iLength,CStringA& strA){
-		CStringA strTemp;
-		for (int i =0;i<iLength;i++)
-		{
-			strTemp.Format("%c",pData[i]);
-			strA += strTemp;
-		}
-	}
+	void ByteToChar(const BYTE* pData,int iLength,CStringA& strA);
 
-	static CCameraProxy* m_pCameraProxy;
+	 CCameraProxy* m_pCameraProxy;
+static CDispatcher* m_pDispatcher;
 };
 
