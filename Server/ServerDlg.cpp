@@ -233,6 +233,10 @@ void CServerDlg::OnDestroy()
 	{
 		delete m_pServerListener;
 	}
+	if (m_pHelp!=NULL)
+	{
+		delete m_pHelp;
+	}
 
 
 	CDialogEx::OnDestroy();

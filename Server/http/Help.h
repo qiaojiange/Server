@@ -508,12 +508,11 @@ public:
 private:
 	static CHelp* m_pHelp;
 
+public:
+	~CHelp(void);
 
 private:
 	CHelp(void);
-	~CHelp(void);
-		
-
 	CListBox* g_pInfoList;
 	CWnd* g_pMainWnd;
 

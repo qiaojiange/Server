@@ -82,7 +82,7 @@ void CCameraProxy::handJsonData(IHttpServer* pSend, CONNID dwConnID,CStringA& js
 		case  CAMERA_TRANS_PICTURE:
 			{
 				TRACE("-----CAMERA_TRANS_PICTURE------\n");
-
+			//	isSave = true;//先传过来一张图片
 				if (!isSave)
 				{
 					
@@ -105,34 +105,38 @@ void CCameraProxy::handJsonData(IHttpServer* pSend, CONNID dwConnID,CStringA& js
 					THeader header[] = { {"Content-Type","text/plain"},{"Content-Length",strContentLength}};
 					pSend->SendResponse(dwConnID,HSC_OK,"Server OK",header,sizeof(header)/sizeof(THeader),(BYTE*)result.c_str(),result.length());
 
-					if (!pSend->IsKeepAlive(dwConnID))
+				/*	if (!pSend->IsKeepAlive(dwConnID))
 					{
 						pSend->Release(dwConnID);
-					}
+					}*/
 
 					isSave = true;
 
 				}else{
-
+					TRACE("----send file=---\n");
 					CString filePath;
 					filePath = m_filePathJpg;
 					CFile file(filePath,CFile::modeRead);
 					ULONGLONG length = file.GetLength();
 					BYTE* pData = new BYTE[length];
 					file.Read(pData,length);
-
+					TRACE("----length=---\n");
 					CStringA strContentLength;
 					strContentLength.Format("%u",length);
 					THeader header[]  = {{"Content-Type","picture"},{"Content-Length",strContentLength}};
 					int iHeaderCount = sizeof(header)/sizeof(THeader);
 					pSend->SendResponse(dwConnID,HSC_OK,"HP Http Server OK",header,iHeaderCount,pData,length);
 
+					//pSend->SendLocalFile(dwConnID,m_filePathJpg,200,nullptr,header,iHeaderCount);
+					//pSend->SendSmallFile(dwConnID,filePath);
 
-					if (!pSend->IsKeepAlive(dwConnID))
+					TRACE("------SendResponse----ok--------\n");
+					/*	if (!pSend->IsKeepAlive(dwConnID))
 					{
-						pSend->Release(dwConnID);
-					}
-
+					TRACE("--!pSend->IsKeepAlive(dwConnID)-----\n");
+					pSend->Release(dwConnID);
+					}*/
+					file.Close();
 					isSave = false;
 
 				}
@@ -310,6 +314,8 @@ void CCameraProxy::startPreview(Json::Value &response, CStringA &cameraMsg, IHtt
 
 void CCameraProxy::stopPreview(Json::Value &response, CStringA &cameraMsg, IHttpServer* pSend, CONNID dwConnID)
 {
+
+	TRACE("-----stopPreview--\n");
 	if (CAMERA_STATUS_ERROR == m_pCamera->stopPreview())
 	{
 		response["status"] = CAMERA_STATUS_ERROR;
